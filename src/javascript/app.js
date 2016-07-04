@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import $ from 'jquery';
 
-import {Navbar} from 'react-bootstrap';
+import {Navbar, Nav, NavItem, NavDropdown, MenuItem} from 'react-bootstrap';
 
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 
@@ -16,9 +16,26 @@ const CharityImage = (props) => {
     return <div style={{border: "1px solid black", height: 25, width: 50}}></div>;
 };
 
+const Charity = (props) => {
+    return (
+        <div style={{flex: "1 0 auto", display: "flex", flexDirection: "row", padding: 5}}>
+            {
+                props.imageSide === "left" ?
+                    <div style={{flex: "0 0 auto"}}><CharityImage/></div> :
+                    <div style={{flex: "1 0 auto"}}>{props.charityName}</div>
+            }
+            {
+                props.imageSide === "left" ?
+                    <div style={{flex: "1 0 auto"}}>{props.charityName}</div> :
+                    <div style={{flex: "0 0 auto"}}><CharityImage/></div>
+            }
+        </div>
+    );
+};
+
 const FullScreenHeader = (props) => {
     return (
-        <div className="container">
+        <div className="site-header container">
             <div style={{display: "flex", flexDirection: "row"}}>
                 <div style={{flex: "0 0 auto", display: "flex", flexDirection: "column"}}>
                     <div style={{flex: "0 0 auto", height: 170, width: 170, backgroundColor: "red"}}>LOGO</div>
@@ -28,25 +45,23 @@ const FullScreenHeader = (props) => {
                     GAMERS 4 LIFE
                 </div>
                 <div style={{flex: "0 0 auto", backgroundColor: "green", display: "flex", flexDirection: "column"}}>
-                    <div style={{flex: "1 0 auto", display: "flex", flexDirection: "row", padding: 5}}>
-                        <div style={{flex: "0 0 auto"}}><CharityImage/></div>
-                        <div style={{flex: "1 0 auto"}}>Charity A</div>
-                    </div>
-                    <div style={{flex: "1 0 auto", display: "flex", flexDirection: "row", padding: 5}}>
-                        <div style={{flex: "1 0 auto"}}>Charity B</div>
-                        <div style={{flex: "0 0 auto"}}><CharityImage/></div>
-                    </div>
-                    <div style={{flex: "1 0 auto", display: "flex", flexDirection: "row", padding: 5}}>
-                        <div style={{flex: "0 0 auto"}}><CharityImage/></div>
-                        <div style={{flex: "1 0 auto"}}>Charity C</div>
-                    </div>
-                    <div style={{flex: "1 0 auto", display: "flex", flexDirection: "row", padding: 5}}>
-                        <div style={{flex: "1 0 auto"}}>Charity D</div>
-                        <div style={{flex: "0 0 auto"}}><CharityImage/></div>
-                    </div>
+                    <Charity charityName="Charity A" imageSide="left"/>
+                    <Charity charityName="Charity B" imageSide="right"/>
+                    <Charity charityName="Charity C" imageSide="left"/>
+                    <Charity charityName="Charity D" imageSide="right"/>
                 </div>
             </div>
         </div>
+    );
+};
+
+const MobileNav = (props) => {
+    return (
+        <Navbar>
+            <Navbar.Collapse>
+                {props.children}
+            </Navbar.Collapse>
+        </Navbar>
     );
 };
 
@@ -63,7 +78,7 @@ const App = React.createClass({
             <MuiThemeProvider>
                 <div>
                     {this.renderHeader()}
-                    <Navbar staticTop={true}/>
+                    {this.renderNav()}
                     <div classname="container">
                         WIDTH: {this.state.windowWidth}
                     </div>
@@ -74,9 +89,56 @@ const App = React.createClass({
 
     renderHeader() {
         if (mobileCheck() || (this.state.windowWidth < 600)) {
-            return <span>moo</span>;
+            return <span>Mini Header</span>;
         } else {
             return <FullScreenHeader/>;
+        }
+    },
+
+    renderNav() {
+    const isMobile = (mobileCheck() || (this.state.windowWidth < 600));
+        return (
+            <div className="site-nav">
+                {
+                    isMobile ?
+                        <MobileNav>{this.renderNavContent(isMobile)}</MobileNav> :
+                        <div className="container">{this.renderNavContent(isMobile)}</div>
+                }
+            </div>
+        );
+    },
+
+    renderNavContent(isMobile) {
+        if (isMobile) {
+            return (
+                <Nav activeKey={1} onSelect={this.handleSelect}>
+                    <NavItem eventKey={1} href="/home">NavItem 1 content</NavItem>
+                    <NavItem eventKey={2} title="Item">NavItem 2 content</NavItem>
+                    <NavItem eventKey={3} disabled>NavItem 3 content</NavItem>
+                    <NavDropdown eventKey={4} title="Dropdown" id="nav-dropdown">
+                        <MenuItem eventKey="4.1">Action</MenuItem>
+                        <MenuItem eventKey="4.2">Another action</MenuItem>
+                        <MenuItem eventKey="4.3">Something else here</MenuItem>
+                        <MenuItem divider />
+                        <MenuItem eventKey="4.4">Separated link</MenuItem>
+                    </NavDropdown>
+                </Nav>
+            );
+        } else {
+            return (
+                <Nav bsStyle="tabs" activeKey={1} onSelect={this.handleSelect}>
+                    <NavItem eventKey={1} href="/home">NavItem 1 content</NavItem>
+                    <NavItem eventKey={2} title="Item">NavItem 2 content</NavItem>
+                    <NavItem eventKey={3} disabled>NavItem 3 content</NavItem>
+                    <NavDropdown eventKey={4} title="Dropdown" id="nav-dropdown">
+                        <MenuItem eventKey="4.1">Action</MenuItem>
+                        <MenuItem eventKey="4.2">Another action</MenuItem>
+                        <MenuItem eventKey="4.3">Something else here</MenuItem>
+                        <MenuItem divider />
+                        <MenuItem eventKey="4.4">Separated link</MenuItem>
+                    </NavDropdown>
+                </Nav>
+            );
         }
     },
 

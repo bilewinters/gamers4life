@@ -1,7 +1,8 @@
 @import "./node_modules/bootstrap/less/bootstrap.less";
 
-@bg-col: #262626;
-@text-col: #fcf8e3;
+@bg-col: #ECECEC;
+@header-text-col: #fcf8e3;
+@text-col: #222222;
 @logo-col: #b10000;
 
 body {
@@ -10,3 +11,18 @@ body {
   font-family: 'Roboto', sans-serif;
 }
 
+.site-header {
+  color: @header-text-col;
+}
+
+.site-nav {
+  background-color: #FFFFFF;
+  padding-top: 5px;
+
+  .nav-tabs {
+    border-bottom: 0px;
+    li.active > a {
+      background-color: @bg-col;
+    }
+  }
+}
