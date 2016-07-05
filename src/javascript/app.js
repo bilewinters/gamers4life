@@ -57,11 +57,27 @@ const FullScreenHeader = (props) => {
 
 const MobileNav = (props) => {
     return (
-        <Navbar>
-            <Navbar.Collapse>
-                {props.children}
-            </Navbar.Collapse>
-        </Navbar>
+        <div>
+            <Navbar style={{marginBottom: 0, border: 0}}>
+                <Navbar.Header>
+                    <Navbar.Brand>
+                        <div style={{textAlign: "centre", backgroundColor: "red"}}>
+                            LOGO
+                        </div>
+                    </Navbar.Brand>
+                    <Navbar.Brand>
+                        <div style={{textAlign: "centre", backgroundColor: "purple"}}>
+                            GAMERS 4 LIFE
+                        </div>
+                    </Navbar.Brand>
+                    <Navbar.Toggle/>
+                </Navbar.Header>
+                <Navbar.Collapse>
+                    {props.children}
+                </Navbar.Collapse>
+            </Navbar>
+            <div style={{backgroundColor: "blue"}}>SOCIAL</div>
+        </div>
     );
 };
 
@@ -69,7 +85,8 @@ const App = React.createClass({
 
     getInitialState: function() {
         return {
-            windowWidth: 1024
+            windowWidth: 1024,
+            selectedTab: 1
         };
     },
 
@@ -89,7 +106,7 @@ const App = React.createClass({
 
     renderHeader() {
         if (mobileCheck() || (this.state.windowWidth < 600)) {
-            return <span>Mini Header</span>;
+            return null;
         } else {
             return <FullScreenHeader/>;
         }
@@ -98,7 +115,7 @@ const App = React.createClass({
     renderNav() {
     const isMobile = (mobileCheck() || (this.state.windowWidth < 600));
         return (
-            <div className="site-nav">
+            <div className="site-nav" style={{paddingTop: isMobile ? 0 : 5}}>
                 {
                     isMobile ?
                         <MobileNav>{this.renderNavContent(isMobile)}</MobileNav> :
@@ -109,37 +126,17 @@ const App = React.createClass({
     },
 
     renderNavContent(isMobile) {
-        if (isMobile) {
-            return (
-                <Nav activeKey={1} onSelect={this.handleSelect}>
-                    <NavItem eventKey={1} href="/home">NavItem 1 content</NavItem>
-                    <NavItem eventKey={2} title="Item">NavItem 2 content</NavItem>
-                    <NavItem eventKey={3} disabled>NavItem 3 content</NavItem>
-                    <NavDropdown eventKey={4} title="Dropdown" id="nav-dropdown">
-                        <MenuItem eventKey="4.1">Action</MenuItem>
-                        <MenuItem eventKey="4.2">Another action</MenuItem>
-                        <MenuItem eventKey="4.3">Something else here</MenuItem>
-                        <MenuItem divider />
-                        <MenuItem eventKey="4.4">Separated link</MenuItem>
-                    </NavDropdown>
-                </Nav>
-            );
-        } else {
-            return (
-                <Nav bsStyle="tabs" activeKey={1} onSelect={this.handleSelect}>
-                    <NavItem eventKey={1} href="/home">NavItem 1 content</NavItem>
-                    <NavItem eventKey={2} title="Item">NavItem 2 content</NavItem>
-                    <NavItem eventKey={3} disabled>NavItem 3 content</NavItem>
-                    <NavDropdown eventKey={4} title="Dropdown" id="nav-dropdown">
-                        <MenuItem eventKey="4.1">Action</MenuItem>
-                        <MenuItem eventKey="4.2">Another action</MenuItem>
-                        <MenuItem eventKey="4.3">Something else here</MenuItem>
-                        <MenuItem divider />
-                        <MenuItem eventKey="4.4">Separated link</MenuItem>
-                    </NavDropdown>
-                </Nav>
-            );
-        }
+        return (
+            <Nav bsStyle={isMobile ? undefined : "tabs"} activeKey={this.state.selectedTab} onSelect={this.handleSelect}>
+                <NavItem eventKey={1} href="/home">Home</NavItem>
+                <NavItem eventKey={2} href="/charities">Charities</NavItem>
+                <NavItem eventKey={3} title="/venue">Venue</NavItem>
+            </Nav>
+        );
+    },
+
+    handleSelect(eventKey) {
+        this.setState({selectedTab: eventKey});
     },
 
     componentDidMount() {
